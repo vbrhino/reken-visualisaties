@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cirkels Visualisatie - Reken Visualisaties</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Cirkels Visualisatie</h1>
+        <p>Gebruik de cirkels om bij het rekenen te helpen!</p>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="totalCircles">Aantal cirkels (rode rand):</label>
+                <input type="number" id="totalCircles" min="0" max="50" value="10" />
+            </div>
+            
+            <div class="input-group">
+                <label for="filledCircles">Aantal gevulde cirkels (groen, van rechts):</label>
+                <input type="number" id="filledCircles" min="0" max="50" value="0" />
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <h3>Visualisatie:</h3>
+            <div id="circlesContainer" class="circles-container">
+                <!-- Circles will be generated here by JavaScript -->
+            </div>
+        </div>
+        
+        <div class="bridge-section" id="bridgeSection" style="display: none;">
+            <h3>Over de brug 🌉</h3>
+            <div id="bridgeExplanation" class="bridge-explanation">
+                <!-- Bridge explanation will be generated here -->
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-link">← Terug naar Home</a>
+    </div>
+    
+    <script src="circles.js"></script>
+</body>
+</html>
