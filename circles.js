@@ -38,14 +38,23 @@ function createCircles() {
     checkForBridgeScenario(totalCircles, filledCircles);
 }
 
+// Helper function to check if bridge method is applicable
+function isBridgeMethodApplicable(total, remaining, filled) {
+    // Bridge method is useful when:
+    // - Starting number is greater than 10
+    // - Result is less than 10 (crossing through 10)
+    // - Result is non-negative
+    // - We're actually subtracting something
+    return total > 10 && remaining < 10 && remaining >= 0 && filled > 0;
+}
+
 // Function to check if we should show bridge explanation for subtraction
 function checkForBridgeScenario(total, filled) {
     // Check if this looks like a subtraction problem where we cross through 10
     // For example: 16 - 7, where total=16 and we want to subtract 7
     const remaining = total - filled;
     
-    // Only show bridge section if it's a subtraction that crosses 10
-    if (total > 10 && remaining < 10 && remaining >= 0 && filled > 0) {
+    if (isBridgeMethodApplicable(total, remaining, filled)) {
         showBridgeExplanation(total, filled);
     } else {
         bridgeSection.style.display = 'none';
@@ -58,14 +67,14 @@ function showBridgeExplanation(total, subtract) {
     
     bridgeSection.style.display = 'block';
     
-    // Calculate the steps
-    const toTen = total - 10;
-    const fromTen = 10 - result;
+    // Calculate the steps for the bridge method
+    const stepsToReachTen = total - 10;  // How many to subtract to reach 10
+    const remainingStepsFromTen = 10 - result;  // How many more to subtract from 10
     
     let explanation = `<p><strong>Rekensom: ${total} - ${subtract} = ${result}</strong></p>`;
-    explanation += `<div class="bridge-step">Stap 1: ${total} - ${toTen} = 10 (eerst naar 10)</div>`;
-    explanation += `<div class="bridge-step">Stap 2: 10 - ${fromTen} = ${result} (dan verder)</div>`;
-    explanation += `<p>We hebben in totaal ${toTen} + ${fromTen} = ${subtract} afgetrokken!</p>`;
+    explanation += `<div class="bridge-step">Stap 1: ${total} - ${stepsToReachTen} = 10 (eerst naar 10)</div>`;
+    explanation += `<div class="bridge-step">Stap 2: 10 - ${remainingStepsFromTen} = ${result} (dan verder)</div>`;
+    explanation += `<p>We hebben in totaal ${stepsToReachTen} + ${remainingStepsFromTen} = ${subtract} afgetrokken!</p>`;
     
     bridgeExplanation.innerHTML = explanation;
 }
