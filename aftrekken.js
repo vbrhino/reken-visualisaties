@@ -2,36 +2,41 @@
 const numberInput = document.getElementById('numberInput');
 const incrementBtn = document.getElementById('incrementBtn');
 const decrementBtn = document.getElementById('decrementBtn');
-const leftColumn = document.getElementById('leftColumn');
-const rightColumn = document.getElementById('rightColumn');
-const leftCount = document.getElementById('leftCount');
-const rightCount = document.getElementById('rightCount');
-const leftCountCalc = document.getElementById('leftCountCalc');
-const rightCountCalc = document.getElementById('rightCountCalc');
+const initialDisplay = document.getElementById('initialDisplay');
+const removedColumn = document.getElementById('removedColumn');
+const remainingColumn = document.getElementById('remainingColumn');
+const removedCount = document.getElementById('removedCount');
+const remainingCount = document.getElementById('remainingCount');
+const initialCountCalc = document.getElementById('initialCountCalc');
+const removedCountCalc = document.getElementById('removedCountCalc');
 const answerInput = document.getElementById('answerInput');
 const checkBtn = document.getElementById('checkBtn');
 const feedback = document.getElementById('feedback');
-const tipModal = document.getElementById('tipModal');
-const tipText = document.getElementById('tipText');
-const closeTipBtn = document.getElementById('closeTipBtn');
+const tipBar = document.getElementById('tipBar');
+const tipContent = document.getElementById('tipContent');
+const tipHeader = document.getElementById('tipHeader');
+const toggleTipBtn = document.getElementById('toggleTipBtn');
+
+// Track initial value
+let initialValue = 10;
 
 // Timer for input reset detection
 let inputTimer = null;
 const INPUT_RESET_DELAY = 5000; // 5 seconds
 
-// Timer for showing tip modal
+// Timer for showing tip bar
 let tipTimer = null;
 const TIP_DELAY = 5000; // 5 seconds
 
 // Function to update counts
 function updateCounts() {
-    const leftSymbols = leftColumn.querySelectorAll('.symbol').length;
-    const rightSymbols = rightColumn.querySelectorAll('.symbol').length;
+    const removedSymbols = removedColumn.querySelectorAll('.symbol').length;
+    const remainingSymbols = remainingColumn.querySelectorAll('.symbol').length;
     
-    leftCount.textContent = leftSymbols;
-    rightCount.textContent = rightSymbols;
-    leftCountCalc.textContent = leftSymbols;
-    rightCountCalc.textContent = rightSymbols;
+    removedCount.textContent = removedSymbols;
+    remainingCount.textContent = remainingSymbols;
+    initialCountCalc.textContent = initialValue;
+    removedCountCalc.textContent = removedSymbols;
     
     // Clear feedback when counts change
     feedback.textContent = '';
@@ -48,11 +53,11 @@ function createSymbol() {
     symbol.textContent = '☀️'; // Sun emoji for kids
     
     symbol.addEventListener('click', function() {
-        // Move symbol from left to right, or right to left
-        if (this.parentElement === leftColumn) {
-            rightColumn.appendChild(this);
-        } else if (this.parentElement === rightColumn) {
-            leftColumn.appendChild(this);
+        // Move symbol from remaining to removed, or removed back to remaining
+        if (this.parentElement === remainingColumn) {
+            removedColumn.appendChild(this);
+        } else if (this.parentElement === removedColumn) {
+            remainingColumn.appendChild(this);
         }
         updateCounts();
     });
@@ -63,20 +68,24 @@ function createSymbol() {
 // Function to generate symbols based on input
 function generateSymbols() {
     const count = parseInt(numberInput.value) || 0;
-    const limitedCount = Math.min(Math.max(count, 0), 20);
+    const limitedCount = Math.min(Math.max(count, 0), 50);
     
     // Update input if value was adjusted
     if (count !== limitedCount) {
         numberInput.value = limitedCount;
     }
     
-    // Clear both columns
-    leftColumn.innerHTML = '';
-    rightColumn.innerHTML = '';
+    // Store initial value
+    initialValue = limitedCount;
+    initialDisplay.textContent = limitedCount;
     
-    // Create symbols in left column
+    // Clear both columns
+    remainingColumn.innerHTML = '';
+    removedColumn.innerHTML = '';
+    
+    // Create symbols in remaining column
     for (let i = 0; i < limitedCount; i++) {
-        leftColumn.appendChild(createSymbol());
+        remainingColumn.appendChild(createSymbol());
     }
     
     updateCounts();
@@ -103,7 +112,7 @@ function handleInputChange() {
 // Increment and decrement buttons
 incrementBtn.addEventListener('click', () => {
     const currentValue = parseInt(numberInput.value) || 0;
-    numberInput.value = Math.min(currentValue + 1, 20);
+    numberInput.value = Math.min(currentValue + 1, 50);
     generateSymbols();
 });
 
@@ -118,9 +127,8 @@ numberInput.addEventListener('input', handleInputChange);
 
 // Check answer button
 checkBtn.addEventListener('click', () => {
-    const leftSymbols = leftColumn.querySelectorAll('.symbol').length;
-    const rightSymbols = rightColumn.querySelectorAll('.symbol').length;
-    const correctAnswer = leftSymbols - rightSymbols;
+    const removedSymbols = removedColumn.querySelectorAll('.symbol').length;
+    const correctAnswer = initialValue - removedSymbols;
     const userAnswer = parseInt(answerInput.value);
     
     if (isNaN(userAnswer)) {
@@ -153,21 +161,23 @@ function resetTipTimer() {
         tipTimer = null;
     }
     
-    // Hide tip modal if it's showing
-    tipModal.style.display = 'none';
+    // Hide tip bar if it's showing
+    tipBar.style.display = 'none';
+    tipContent.classList.add('tip-content-collapsed');
+    tipContent.classList.remove('tip-content-expanded');
+    toggleTipBtn.textContent = '▼';
     
     // Check if we should show a tip
-    const leftSymbols = leftColumn.querySelectorAll('.symbol').length;
-    const rightSymbols = rightColumn.querySelectorAll('.symbol').length;
+    const removedSymbols = removedColumn.querySelectorAll('.symbol').length;
     
     // Only show tip if:
-    // 1. There's at least 1 item in the right column
-    // 2. The left column has more than 10 items
+    // 1. There's at least 1 item in the removed column
+    // 2. The initial value is greater than 10
     // 3. The result would be less than 10 (crossing the 10 boundary)
-    if (rightSymbols >= 1 && leftSymbols > 10 && (leftSymbols - rightSymbols) < 10) {
+    if (removedSymbols >= 1 && initialValue > 10 && (initialValue - removedSymbols) < 10) {
         // Set new tip timer
         tipTimer = setTimeout(() => {
-            showTipModal(leftSymbols, rightSymbols);
+            showTipBar(initialValue, removedSymbols);
         }, TIP_DELAY);
     }
 }
@@ -183,51 +193,50 @@ function shouldUseBridgeMethod(total, subtract) {
 }
 
 // Function to generate tip content
-function showTipModal(leftSymbols, rightSymbols) {
-    if (!shouldUseBridgeMethod(leftSymbols, rightSymbols)) {
+function showTipBar(total, subtract) {
+    if (!shouldUseBridgeMethod(total, subtract)) {
         return;
     }
     
-    const total = leftSymbols;
-    const subtract = rightSymbols;
     const result = total - subtract;
     
     // Calculate bridge method steps
     const stepsToReachTen = total - 10;  // How many to subtract to reach 10
     const remainingStepsFromTen = 10 - result;  // How many more to subtract from 10
     
-    let tipContent = `<div class="tip-problem">De som: <strong>${total} - ${subtract}</strong></div>`;
-    tipContent += `<p class="tip-intro">Laten we de <strong>brug over de 10</strong> gebruiken! 🌉</p>`;
-    tipContent += `<div class="tip-step">
+    let tipHtml = `<div class="tip-problem">De som: <strong>${total} - ${subtract}</strong></div>`;
+    tipHtml += `<p class="tip-intro">Laten we de <strong>brug over de 10</strong> gebruiken! 🌉</p>`;
+    tipHtml += `<div class="tip-step">
         <span class="step-number">1️⃣</span>
         <span class="step-text">Hoeveel moet je aftrekken om tot <strong>10</strong> te komen?<br>
         <strong>${total} - ${stepsToReachTen} = 10</strong></span>
     </div>`;
-    tipContent += `<div class="tip-step">
+    tipHtml += `<div class="tip-step">
         <span class="step-number">2️⃣</span>
         <span class="step-text">Hoeveel heb je nog over van wat je moet aftrekken?<br>
         <strong>${subtract} - ${stepsToReachTen} = ${remainingStepsFromTen}</strong> (je hebt nog ${remainingStepsFromTen} over)</span>
     </div>`;
-    tipContent += `<div class="tip-step">
+    tipHtml += `<div class="tip-step">
         <span class="step-number">3️⃣</span>
         <span class="step-text">Trek die ${remainingStepsFromTen} nu af van 10:<br>
         <strong>10 - ${remainingStepsFromTen} = ${result}</strong></span>
     </div>`;
-    tipContent += `<div class="tip-summary">✨ Het antwoord is <strong>${result}</strong>!</div>`;
+    tipHtml += `<div class="tip-summary">✨ Het antwoord is <strong>${result}</strong>!</div>`;
     
-    tipText.innerHTML = tipContent;
-    tipModal.style.display = 'flex';
+    tipContent.innerHTML = tipHtml;
+    tipBar.style.display = 'block';
 }
 
-// Close tip modal
-closeTipBtn.addEventListener('click', () => {
-    tipModal.style.display = 'none';
-});
-
-// Close modal when clicking outside of it
-tipModal.addEventListener('click', (e) => {
-    if (e.target === tipModal) {
-        tipModal.style.display = 'none';
+// Toggle tip bar expanded/collapsed
+tipHeader.addEventListener('click', () => {
+    if (tipContent.classList.contains('tip-content-collapsed')) {
+        tipContent.classList.remove('tip-content-collapsed');
+        tipContent.classList.add('tip-content-expanded');
+        toggleTipBtn.textContent = '▲';
+    } else {
+        tipContent.classList.add('tip-content-collapsed');
+        tipContent.classList.remove('tip-content-expanded');
+        toggleTipBtn.textContent = '▼';
     }
 });
 
