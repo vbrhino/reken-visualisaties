@@ -17,16 +17,19 @@ const tipContent = document.getElementById('tipContent');
 const tipHeader = document.getElementById('tipHeader');
 const toggleTipBtn = document.getElementById('toggleTipBtn');
 
+// Constants
+const MAX_SYMBOLS = 50;
+const INPUT_RESET_DELAY = 5000; // Allows slow typers to complete input
+const TIP_DELAY = 5000; // Wait before showing educational tips
+
 // Track initial value
 let initialValue = 10;
 
 // Timer for input reset detection
 let inputTimer = null;
-const INPUT_RESET_DELAY = 5000; // 5 seconds
 
 // Timer for showing tip bar
 let tipTimer = null;
-const TIP_DELAY = 5000; // 5 seconds
 
 // Function to update counts
 function updateCounts() {
@@ -68,7 +71,7 @@ function createSymbol() {
 // Function to generate symbols based on input
 function generateSymbols() {
     const count = parseInt(numberInput.value) || 0;
-    const limitedCount = Math.min(Math.max(count, 0), 50);
+    const limitedCount = Math.min(Math.max(count, 0), MAX_SYMBOLS);
     
     // Update input if value was adjusted
     if (count !== limitedCount) {
@@ -98,9 +101,9 @@ function handleInputChange() {
         clearTimeout(inputTimer);
     }
     
-    // Set new timer for reset detection (5 seconds of inactivity)
+    // Set new timer for reset detection
     // This allows slow typers to complete their input without interruption
-    // The timer resets with each keystroke, only marking session end after 5s of no input
+    // The timer resets with each keystroke, only marking session end after delay
     inputTimer = setTimeout(() => {
         // Timer expired - typing session completed (no action needed, just detection)
     }, INPUT_RESET_DELAY);
@@ -112,7 +115,7 @@ function handleInputChange() {
 // Increment and decrement buttons
 incrementBtn.addEventListener('click', () => {
     const currentValue = parseInt(numberInput.value) || 0;
-    numberInput.value = Math.min(currentValue + 1, 50);
+    numberInput.value = Math.min(currentValue + 1, MAX_SYMBOLS);
     generateSymbols();
 });
 
