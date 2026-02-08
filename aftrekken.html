@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aftrek Oefening - Reken Visualisaties</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Aftrek Oefening</h1>
+        <p>Vul een aantal in en klik op de zonnetjes om ze te verplaatsen!</p>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="numberInput">Hoeveel zonnetjes?</label>
+                <div class="number-input-controls">
+                    <button id="decrementBtn" class="arrow-btn">▼</button>
+                    <input type="number" id="numberInput" min="0" max="20" value="5" />
+                    <button id="incrementBtn" class="arrow-btn">▲</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="columns-container">
+            <div class="column">
+                <h3>Linkse Kolom</h3>
+                <div id="leftColumn" class="symbols-column">
+                    <!-- Symbols will be generated here -->
+                </div>
+                <div class="column-count" id="leftCount">0</div>
+            </div>
+            
+            <div class="column">
+                <h3>Rechtse Kolom</h3>
+                <div id="rightColumn" class="symbols-column">
+                    <!-- Symbols will be moved here -->
+                </div>
+                <div class="column-count" id="rightCount">0</div>
+            </div>
+        </div>
+        
+        <div class="calculation-section">
+            <span class="count-display" id="leftCountCalc">0</span>
+            <span class="minus-symbol">−</span>
+            <span class="count-display" id="rightCountCalc">0</span>
+            <span class="equals-symbol">=</span>
+            <input type="number" id="answerInput" class="answer-input" min="0" placeholder="?" />
+        </div>
+        
+        <div class="check-section">
+            <button id="checkBtn" class="check-btn">Controleer!</button>
+            <div id="feedback" class="feedback"></div>
+        </div>
+        
+        <a href="index.html" class="back-link">← Terug naar Home</a>
+    </div>
+    
+    <script src="aftrekken.js"></script>
+</body>
+</html>
