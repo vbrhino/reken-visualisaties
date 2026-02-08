@@ -368,3 +368,139 @@ input[type="number"]:focus {
     color: #856404;
     border: 2px solid #ffeaa7;
 }
+
+/* Tip Modal Styles */
+.tip-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.tip-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.tip-content h3 {
+    color: #667eea;
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.close-tip-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 2.5em;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s;
+}
+
+.close-tip-btn:hover {
+    color: #333;
+}
+
+.tip-text {
+    font-size: 1.1em;
+    line-height: 1.8;
+}
+
+.tip-problem {
+    text-align: center;
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #f0f4ff;
+    border-radius: 15px;
+}
+
+.tip-intro {
+    text-align: center;
+    font-size: 1.3em;
+    color: #667eea;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.tip-step {
+    display: flex;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    border-left: 5px solid #667eea;
+    align-items: flex-start;
+}
+
+.step-number {
+    font-size: 1.8em;
+    flex-shrink: 0;
+}
+
+.step-text {
+    flex: 1;
+    font-size: 1.15em;
+    line-height: 1.8;
+    color: #333;
+}
+
+.step-text strong {
+    color: #667eea;
+    font-size: 1.2em;
+}
+
+.tip-summary {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.5em;
+    color: #155724;
+    font-weight: bold;
+}

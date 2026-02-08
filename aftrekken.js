@@ -11,10 +11,17 @@ const rightCountCalc = document.getElementById('rightCountCalc');
 const answerInput = document.getElementById('answerInput');
 const checkBtn = document.getElementById('checkBtn');
 const feedback = document.getElementById('feedback');
+const tipModal = document.getElementById('tipModal');
+const tipText = document.getElementById('tipText');
+const closeTipBtn = document.getElementById('closeTipBtn');
 
 // Timer for input reset detection
 let inputTimer = null;
 const INPUT_RESET_DELAY = 5000; // 5 seconds
+
+// Timer for showing tip modal
+let tipTimer = null;
+const TIP_DELAY = 5000; // 5 seconds
 
 // Function to update counts
 function updateCounts() {
@@ -29,6 +36,9 @@ function updateCounts() {
     // Clear feedback when counts change
     feedback.textContent = '';
     feedback.className = 'feedback';
+    
+    // Reset and start tip timer
+    resetTipTimer();
 }
 
 // Function to create a symbol element
@@ -79,9 +89,11 @@ function handleInputChange() {
         clearTimeout(inputTimer);
     }
     
-    // Set new timer for reset detection
+    // Set new timer for reset detection (5 seconds of inactivity)
+    // This allows slow typers to complete their input without interruption
+    // The timer resets with each keystroke, only marking session end after 5s of no input
     inputTimer = setTimeout(() => {
-        // Timer expired, this marks the end of typing session
+        // Timer expired - typing session completed (no action needed, just detection)
     }, INPUT_RESET_DELAY);
     
     // Generate symbols immediately
@@ -130,6 +142,92 @@ checkBtn.addEventListener('click', () => {
 answerInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         checkBtn.click();
+    }
+});
+
+// Function to reset tip timer
+function resetTipTimer() {
+    // Clear existing tip timer
+    if (tipTimer) {
+        clearTimeout(tipTimer);
+        tipTimer = null;
+    }
+    
+    // Hide tip modal if it's showing
+    tipModal.style.display = 'none';
+    
+    // Check if we should show a tip
+    const leftSymbols = leftColumn.querySelectorAll('.symbol').length;
+    const rightSymbols = rightColumn.querySelectorAll('.symbol').length;
+    
+    // Only show tip if:
+    // 1. There's at least 1 item in the right column
+    // 2. The left column has more than 10 items
+    // 3. The result would be less than 10 (crossing the 10 boundary)
+    if (rightSymbols >= 1 && leftSymbols > 10 && (leftSymbols - rightSymbols) < 10) {
+        // Set new tip timer
+        tipTimer = setTimeout(() => {
+            showTipModal(leftSymbols, rightSymbols);
+        }, TIP_DELAY);
+    }
+}
+
+// Function to check if bridge method applies
+function shouldUseBridgeMethod(total, subtract) {
+    const result = total - subtract;
+    // Bridge method is useful when:
+    // - Starting number is greater than 10
+    // - Result is less than 10 (crossing through 10)
+    // - We're actually subtracting something
+    return total > 10 && result < 10 && result >= 0 && subtract > 0;
+}
+
+// Function to generate tip content
+function showTipModal(leftSymbols, rightSymbols) {
+    if (!shouldUseBridgeMethod(leftSymbols, rightSymbols)) {
+        return;
+    }
+    
+    const total = leftSymbols;
+    const subtract = rightSymbols;
+    const result = total - subtract;
+    
+    // Calculate bridge method steps
+    const stepsToReachTen = total - 10;  // How many to subtract to reach 10
+    const remainingStepsFromTen = 10 - result;  // How many more to subtract from 10
+    
+    let tipContent = `<div class="tip-problem">De som: <strong>${total} - ${subtract}</strong></div>`;
+    tipContent += `<p class="tip-intro">Laten we de <strong>brug over de 10</strong> gebruiken! 🌉</p>`;
+    tipContent += `<div class="tip-step">
+        <span class="step-number">1️⃣</span>
+        <span class="step-text">Hoeveel moet je aftrekken om tot <strong>10</strong> te komen?<br>
+        <strong>${total} - ${stepsToReachTen} = 10</strong></span>
+    </div>`;
+    tipContent += `<div class="tip-step">
+        <span class="step-number">2️⃣</span>
+        <span class="step-text">Hoeveel heb je nog over van wat je moet aftrekken?<br>
+        <strong>${subtract} - ${stepsToReachTen} = ${remainingStepsFromTen}</strong> (je hebt nog ${remainingStepsFromTen} over)</span>
+    </div>`;
+    tipContent += `<div class="tip-step">
+        <span class="step-number">3️⃣</span>
+        <span class="step-text">Trek die ${remainingStepsFromTen} nu af van 10:<br>
+        <strong>10 - ${remainingStepsFromTen} = ${result}</strong></span>
+    </div>`;
+    tipContent += `<div class="tip-summary">✨ Het antwoord is <strong>${result}</strong>!</div>`;
+    
+    tipText.innerHTML = tipContent;
+    tipModal.style.display = 'flex';
+}
+
+// Close tip modal
+closeTipBtn.addEventListener('click', () => {
+    tipModal.style.display = 'none';
+});
+
+// Close modal when clicking outside of it
+tipModal.addEventListener('click', (e) => {
+    if (e.target === tipModal) {
+        tipModal.style.display = 'none';
     }
 });
 
