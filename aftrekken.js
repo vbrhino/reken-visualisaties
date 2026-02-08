@@ -82,7 +82,6 @@ function handleInputChange() {
     // Set new timer for reset detection
     inputTimer = setTimeout(() => {
         // Timer expired, this marks the end of typing session
-        console.log('Typing session completed');
     }, INPUT_RESET_DELAY);
     
     // Generate symbols immediately
