@@ -17,8 +17,8 @@
     <div class="tip-step">
       <span class="step-number">1️⃣</span>
       <span class="step-text">
-        Hoeveel moet je aftrekken om tot <strong>10</strong> te komen?<br>
-        <strong>{{ initialValue }} - {{ stepsToReachTen }} = {{ Math.floor(initialValue / 10) * 10 }}</strong>
+        Hoeveel moet je aftrekken om tot het eerste tiental (<strong>{{ firstTensValue }}</strong>) te komen?<br>
+        <strong>{{ initialValue }} - {{ stepsToReachTen }} = {{ firstTensValue }}</strong>
       </span>
     </div>
     
@@ -34,8 +34,8 @@
     <div class="tip-step">
       <span class="step-number">3️⃣</span>
       <span class="step-text">
-        Trek die {{ remainingStepsFromTen }} nu af van 10:<br>
-        <strong>{{ Math.floor(initialValue / 10) * 10 }} - {{ remainingStepsFromTen }} = {{ result }}</strong>
+        Trek die {{ remainingStepsFromTen }} nu af van {{ firstTensValue }}:<br>
+        <strong>{{ firstTensValue }} - {{ remainingStepsFromTen }} = {{ result }}</strong>
       </span>
     </div>
     

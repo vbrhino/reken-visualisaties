@@ -23,6 +23,7 @@ export class TipBar implements OnChanges {
   result: number = 0;
   stepsToReachTen: number = 0;
   remainingStepsFromTen: number = 0;
+  firstTensValue: number = 0;
   
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['problemType'] || changes['initialValue'] || changes['removedValue']) {
@@ -31,14 +32,19 @@ export class TipBar implements OnChanges {
   }
   
   private updateTipContent(): void {
+    // Check if initialValue is a tens value (like 10, 20, 30, etc.)
+    const isInitialValueATensValue = this.initialValue % 10 === 0;
+    
     this.shouldShow = this.problemType === ProblemType.AFTREKKEN_BRUG_TIENTAL && 
                       this.initialValue > 10 && 
-                      this.removedValue > 0;
+                      this.removedValue > 0 &&
+                      !isInitialValueATensValue;
     
     if (this.shouldShow) {
       this.result = this.initialValue - this.removedValue;
       this.stepsToReachTen = this.initialValue - Math.floor(this.initialValue / 10) * 10;
-      this.remainingStepsFromTen = Math.floor(this.initialValue / 10) * 10 - this.result;
+      this.firstTensValue = Math.floor(this.initialValue / 10) * 10;
+      this.remainingStepsFromTen = this.firstTensValue - this.result;
     }
   }
   
