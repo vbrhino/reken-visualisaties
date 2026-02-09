@@ -127,9 +127,14 @@
     filter: blur(8px);
     transition: filter 0.3s ease;
     cursor: pointer;
-    user-select: none;
 }
 
-.blurred-answer:hover {
+.blurred-answer:hover,
+.blurred-answer:focus {
     filter: blur(0);
+}
+
+.blurred-answer:focus {
+    outline: 2px solid #000;
+    outline-offset: 2px;
 }
