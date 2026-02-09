@@ -1,0 +1,46 @@
+<div *ngIf="shouldShow" class="tip-bar">
+  <div class="tip-header" (click)="toggleExpanded()">
+    <span class="tip-icon">💡</span>
+    <span class="tip-title">Hulp bij aftrekken - Brug over de 10</span>
+    <button class="toggle-tip-btn">{{ isExpanded ? '▲' : '▼' }}</button>
+  </div>
+  
+  <div *ngIf="isExpanded" class="tip-content-expanded">
+    <div class="tip-problem">
+      De som: <strong>{{ initialValue }} - {{ removedValue }}</strong>
+    </div>
+    
+    <p class="tip-intro">
+      Laten we de <strong>brug over de 10</strong> gebruiken! 🌉
+    </p>
+    
+    <div class="tip-step">
+      <span class="step-number">1️⃣</span>
+      <span class="step-text">
+        Hoeveel moet je aftrekken om tot <strong>10</strong> te komen?<br>
+        <strong>{{ initialValue }} - {{ stepsToReachTen }} = {{ Math.floor(initialValue / 10) * 10 }}</strong>
+      </span>
+    </div>
+    
+    <div class="tip-step">
+      <span class="step-number">2️⃣</span>
+      <span class="step-text">
+        Hoeveel heb je nog over van wat je moet aftrekken?<br>
+        <strong>{{ removedValue }} - {{ stepsToReachTen }} = {{ remainingStepsFromTen }}</strong> 
+        (je hebt nog {{ remainingStepsFromTen }} over)
+      </span>
+    </div>
+    
+    <div class="tip-step">
+      <span class="step-number">3️⃣</span>
+      <span class="step-text">
+        Trek die {{ remainingStepsFromTen }} nu af van 10:<br>
+        <strong>{{ Math.floor(initialValue / 10) * 10 }} - {{ remainingStepsFromTen }} = {{ result }}</strong>
+      </span>
+    </div>
+    
+    <div class="tip-summary">
+      ✨ Het antwoord is <strong>{{ result }}</strong>!
+    </div>
+  </div>
+</div>

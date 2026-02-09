@@ -1,0 +1,85 @@
+<div class="subtraction-container">
+  <h1>Aftrek Oefening</h1>
+  <p>Vul een aantal in en klik op de zonnetjes om ze te verplaatsen!</p>
+  
+  <div class="input-section" *ngIf="!isInputReadOnly">
+    <div class="input-group">
+      <label for="numberInput">Hoeveel zonnetjes?</label>
+      <div class="number-input-controls">
+        <button (click)="decrement()" class="arrow-btn">▼</button>
+        <input 
+          type="number" 
+          id="numberInput" 
+          [(ngModel)]="currentValue"
+          (ngModelChange)="onInputChange()"
+          [min]="0" 
+          [max]="MAX_SYMBOLS" 
+          [readonly]="isInputReadOnly"
+        />
+        <button (click)="increment()" class="arrow-btn">▲</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="columns-container">
+    <div class="column">
+      <h3>Origineel</h3>
+      <div class="initial-display">{{ currentValue }}</div>
+    </div>
+    
+    <div class="column">
+      <h3>Weggehaald</h3>
+      <div class="symbols-column">
+        <div 
+          *ngFor="let symbol of removedSymbols" 
+          class="symbol"
+          (click)="moveToRemaining(symbol)"
+        >
+          ☀️
+        </div>
+      </div>
+      <div class="column-count">{{ removedCount }}</div>
+    </div>
+    
+    <div class="column">
+      <h3>Over</h3>
+      <div class="symbols-column">
+        <div 
+          *ngFor="let symbol of symbols" 
+          class="symbol"
+          (click)="moveToRemoved(symbol)"
+        >
+          ☀️
+        </div>
+      </div>
+      <div class="column-count">{{ remainingCount }}</div>
+    </div>
+  </div>
+  
+  <div class="calculation-section">
+    <span class="count-display">{{ currentValue }}</span>
+    <span class="minus-symbol">−</span>
+    <span class="count-display">{{ removedCount }}</span>
+    <span class="equals-symbol">=</span>
+    <input 
+      type="number" 
+      [(ngModel)]="userAnswer"
+      (keypress.enter)="checkAnswer()"
+      class="answer-input" 
+      placeholder="?"
+    />
+  </div>
+  
+  <div class="check-section">
+    <button (click)="checkAnswer()" class="check-btn">Controleer!</button>
+    <div *ngIf="feedback" [class]="'feedback ' + feedbackClass">
+      {{ feedback }}
+    </div>
+  </div>
+  
+  <app-tip-bar 
+    [problemType]="problemType"
+    [initialValue]="currentValue"
+    [removedValue]="removedCount"
+  ></app-tip-bar>
+</div>
