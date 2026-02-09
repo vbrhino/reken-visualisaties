@@ -10,18 +10,16 @@
 
 **That's it!** The workflow will automatically deploy on the next push.
 
-## 📍 Your URLs (After Deployment)
+## 📍 Your URL (After Deployment)
 
-- **Landing Page**: https://vbrhino.github.io/reken-visualisaties/
-- **Classic App**: https://vbrhino.github.io/reken-visualisaties/aftrekken.html  
-- **Angular App**: https://vbrhino.github.io/reken-visualisaties/angular/
+- **Application**: https://vbrhino.github.io/reken-visualisaties/
 
 ## 🔄 How It Works
 
 Every time you push to `main` or `master`:
 1. GitHub Actions automatically starts
 2. Builds the Angular app
-3. Deploys everything to GitHub Pages
+3. Deploys to GitHub Pages at root URL
 4. Site is live in ~2-3 minutes
 
 ## 📝 Manual Deployment
@@ -36,15 +34,23 @@ After enabling Pages, test it:
 3. Go to **Actions** tab to watch deployment
 4. Visit your site URL when complete!
 
+## 💻 Local Development
+
+```bash
+cd angular-app
+npm install
+npm start
+# Visit http://localhost:4200/
+```
+
 ## 📚 Full Documentation
 
-- Deployment details: See `GITHUB_PAGES_SETUP.md`
-- Angular architecture: See `MIGRATION_SUMMARY.md`
-- Component docs: See `angular-app/ANGULAR_README.md`
+- Component architecture: See `angular-app/ANGULAR_README.md`
+- Migration history: See `MIGRATION_SUMMARY.md`
 
 ## ⚠️ Important Note
 
-The Angular app is built with base href `/reken-visualisaties/angular/` which is correct for GitHub Pages. If you rename your repository, update the base href in `.github/workflows/deploy.yml`.
+The Angular app is built with base href `/reken-visualisaties/` for GitHub Pages. If you rename your repository, update the base href in `.github/workflows/deploy.yml`.
 
 ## 🎉 That's All!
 

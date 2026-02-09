@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository is configured to automatically deploy to GitHub Pages using GitHub Actions. Both the vanilla HTML/CSS/JS version and the Angular application are deployed together.
+This repository is configured to automatically deploy the Angular application to GitHub Pages using GitHub Actions.
 
 ## How It Works
 
@@ -10,11 +10,8 @@ This repository is configured to automatically deploy to GitHub Pages using GitH
 
 1. **Trigger**: Every push to `main` or `master` branch
 2. **Build**: GitHub Actions builds the Angular app
-3. **Deploy**: Both vanilla and Angular versions are deployed to GitHub Pages
-4. **URL Structure**:
-   - Landing page: `https://vbrhino.github.io/reken-visualisaties/`
-   - Classic version: `https://vbrhino.github.io/reken-visualisaties/aftrekken.html`
-   - Angular version: `https://vbrhino.github.io/reken-visualisaties/angular/`
+3. **Deploy**: Angular app is deployed to GitHub Pages at root URL
+4. **URL**: `https://vbrhino.github.io/reken-visualisaties/`
 
 ### Workflow File
 
@@ -25,8 +22,7 @@ The workflow:
 2. Sets up Node.js 20
 3. Installs Angular dependencies
 4. Builds Angular app with correct base href
-5. Copies all files to deployment directory
-6. Deploys to GitHub Pages
+5. Deploys to GitHub Pages
 
 ## Initial Setup (One-Time)
 
@@ -49,17 +45,7 @@ You can also trigger deployment manually:
 
 ## Testing Locally
 
-### Test Vanilla Version
-```bash
-# Open directly in browser
-open index.html
-
-# Or with a simple server
-python -m http.server 8000
-# Visit http://localhost:8000/
-```
-
-### Test Angular Version
+### Test Angular Application
 ```bash
 cd angular-app
 npm install
@@ -67,40 +53,38 @@ npm start
 # Visit http://localhost:4200/
 ```
 
-### Test Full Deployment Structure
+### Test Production Build
 ```bash
-# Build everything
 cd angular-app
-npm run build -- --base-href /reken-visualisaties/angular/
+npm run build -- --base-href /reken-visualisaties/
+# Build output in angular-app/dist/angular-app/browser/
+```
+
+### Test Deployment Structure
+```bash
+# Build Angular app
+cd angular-app
+npm run build -- --base-href /reken-visualisaties/
 cd ..
 
 # Create deployment structure
-mkdir -p _site/angular
-cp index.html styles.css aftrekken.html aftrekken.js _site/
-cp -r angular-app/dist/angular-app/browser/* _site/angular/
+mkdir -p _site
+cp -r angular-app/dist/angular-app/browser/* _site/
 
-# Serve
+# Serve locally
 cd _site
 python -m http.server 8080
 # Visit http://localhost:8080/
 ```
 
-**Note**: When testing locally, the Angular app's links won't work perfectly because it's built with the GitHub Pages base href. This is normal and will work correctly once deployed.
-
 ## Deployment Structure
 
 ```
-GitHub Pages (gh-pages branch or Actions deployment):
-├── index.html              # Landing page with version selection
-├── styles.css              # Shared styles
-├── aftrekken.html         # Classic vanilla version
-├── aftrekken.js
-├── README.md
-├── MIGRATION_SUMMARY.md
-└── angular/               # Angular app
-    ├── index.html
-    ├── main-*.js
-    ├── styles-*.css
+GitHub Pages (deployed via Actions):
+└── / (root)
+    ├── index.html         # Angular app entry point
+    ├── main-*.js          # Angular bundle
+    ├── styles-*.css       # Styles
     └── favicon.ico
 ```
 
@@ -112,10 +96,6 @@ GitHub Pages (gh-pages branch or Actions deployment):
 2. **Verify Pages settings**: Ensure "GitHub Actions" is selected as source
 3. **Check branch**: Workflow runs on `main` or `master` only
 4. **Check permissions**: Repository needs Pages enabled
-
-### Angular Routes 404?
-
-The Angular app uses base href `/reken-visualisaties/angular/` for GitHub Pages. This is correct and will work once deployed.
 
 ### Build Failures?
 
@@ -151,29 +131,16 @@ If you rename the repository, update the base href in `.github/workflows/deploy.
 - name: Build Angular app
   run: |
     cd angular-app
-    npm run build -- --base-href /NEW-REPO-NAME/angular/
-```
-
-### Add More Files
-
-To deploy additional files, update the workflow:
-
-```yaml
-- name: Copy additional files
-  run: |
-    cp your-file.html _site/
+    npm run build -- --base-href /NEW-REPO-NAME/
 ```
 
 ### Custom Domain
 
 To use a custom domain:
 
-1. Add `CNAME` file to repository root with your domain
-2. Update workflow to copy it:
-   ```yaml
-   cp CNAME _site/
-   ```
-3. Configure DNS according to GitHub's instructions
+1. Add `CNAME` file to `angular-app/public/` with your domain
+2. Configure DNS according to GitHub's instructions
+3. The CNAME file will be included in the build automatically
 
 ## Status Badge
 

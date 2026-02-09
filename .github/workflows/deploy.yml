@@ -41,25 +41,12 @@ jobs:
       - name: Build Angular app
         run: |
           cd angular-app
-          npm run build -- --base-href /reken-visualisaties/angular/
+          npm run build -- --base-href /reken-visualisaties/
 
-      - name: Create deployment directory
+      - name: Copy Angular build to deployment directory
         run: |
           mkdir -p _site
-          mkdir -p _site/angular
-
-      - name: Copy vanilla HTML/CSS/JS files
-        run: |
-          cp index.html _site/
-          cp styles.css _site/
-          cp aftrekken.html _site/
-          cp aftrekken.js _site/
-          cp README.md _site/
-          cp MIGRATION_SUMMARY.md _site/
-
-      - name: Copy Angular build
-        run: |
-          cp -r angular-app/dist/angular-app/browser/* _site/angular/
+          cp -r angular-app/dist/angular-app/browser/* _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,30 +1,25 @@
 # Reken Visualisaties
 
-Interactive math visualization tools for subtraction exercises with visual learning aids.
+Interactive math visualization tool built with Angular for subtraction exercises with visual learning aids.
 
 ## 🌐 Live Demo
 
 Visit the application at: **[https://vbrhino.github.io/reken-visualisaties/](https://vbrhino.github.io/reken-visualisaties/)**
 
-### Available Versions
-
-- **Angular Version**: Modern, component-based architecture → [/angular/](https://vbrhino.github.io/reken-visualisaties/angular/)
-- **Classic Version**: Vanilla HTML/CSS/JS → [/aftrekken.html](https://vbrhino.github.io/reken-visualisaties/aftrekken.html)
-
 ## 📦 Repository Structure
 
 ```
 reken-visualisaties/
-├── index.html              # Landing page with version selection
-├── styles.css              # Shared styles
-├── aftrekken.html         # Classic vanilla JS version
-├── aftrekken.js
 ├── angular-app/           # Angular application
 │   ├── src/
 │   │   └── app/
 │   │       ├── components/
+│   │       │   ├── subtraction/    # Main exercise component
+│   │       │   └── tip-bar/        # Educational tips component
 │   │       ├── services/
+│   │       │   └── problem-classifier.service.ts
 │   │       └── enums/
+│   │           └── problem-type.enum.ts
 │   └── ANGULAR_README.md
 └── .github/workflows/
     └── deploy.yml         # GitHub Pages deployment
@@ -38,8 +33,7 @@ This project uses **GitHub Actions** to automatically build and deploy to GitHub
 
 Every push to the `main` or `master` branch triggers:
 1. ✅ Angular app build
-2. ✅ Vanilla files copy
-3. ✅ Deployment to GitHub Pages
+2. ✅ Deployment to GitHub Pages at root URL
 
 ### Manual Deployment
 
@@ -52,9 +46,8 @@ You can also trigger deployment manually:
 
 The workflow automatically:
 - Builds the Angular app with correct base href
-- Copies vanilla HTML/CSS/JS files
-- Deploys everything to GitHub Pages
-- Sets up proper routing for both versions
+- Deploys to GitHub Pages root
+- Sets up proper routing
 
 **No manual configuration needed!** Just enable GitHub Pages in repository settings:
 1. Go to **Settings** → **Pages**
@@ -62,15 +55,6 @@ The workflow automatically:
 
 ## 🛠️ Local Development
 
-### Vanilla Version
-```bash
-# No build needed! Just open in browser:
-open index.html
-# or
-python -m http.server 8000
-```
-
-### Angular Version
 ```bash
 cd angular-app
 npm install
@@ -80,33 +64,50 @@ npm start
 
 ## 📚 Documentation
 
-- [Angular Migration Guide](MIGRATION_SUMMARY.md) - Quick reference for Angular architecture
 - [Angular Full Documentation](angular-app/ANGULAR_README.md) - Comprehensive guide
+- [Migration Summary](MIGRATION_SUMMARY.md) - Architecture overview (historical)
 
 ## 🎯 Features
 
-### Classic Version
-- 3-column layout (Original, Removed, Remaining)
-- Interactive sun symbols
-- Answer validation
-- Bridge method tips for crossing tens
-
-### Angular Version
-- Component-based architecture
-- Problem type classification (AFTREKKEN_BRUG_TIENTAL, etc.)
+### Component Architecture
 - Reusable components for tests/exams
+- Problem type classification (AFTREKKEN_BRUG_TIENTAL, etc.)
 - TypeScript type safety
 - Editable vs read-only modes
+
+### Interactive Learning
+- 3-column layout (Original, Removed, Remaining)
+- Interactive sun symbols (☀️)
+- Answer validation with feedback
 - Automatic tip display based on problem type
+- Bridge method ("brug over de 10") educational hints
+
+### Problem Classification
+The app automatically detects and classifies subtraction problems:
+- **AFTREKKEN_BRUG_TIENTAL**: Crosses tens boundary (e.g., 16 - 8, 21 - 5)
+- **AFTREKKEN_SIMPEL**: Simple subtraction (e.g., 15 - 3)
 
 ## 🔧 GitHub Actions Workflow
 
 The deployment workflow (`.github/workflows/deploy.yml`):
 - Runs on push to main/master
 - Builds Angular app with production settings
-- Copies all necessary files
-- Deploys to GitHub Pages
+- Deploys to GitHub Pages root
 - Supports manual triggering
+
+## 🏗️ Architecture
+
+Built with modern Angular using:
+- **Standalone Components**: No NgModule needed
+- **TypeScript**: Full type safety
+- **Services**: Problem classification logic
+- **Enums**: Type-safe problem categorization
+
+Perfect for:
+- Practice exercises
+- Tests and examinations
+- Timed exercises
+- Educational tools
 
 ## 📝 License
 
